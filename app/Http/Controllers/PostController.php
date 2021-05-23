@@ -10,7 +10,10 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::select(['id', 'title', 'text']);
-        dd($posts);
+
+        return response()->json([
+            'posts' => $posts
+        ],200);
     }
 
     public function show(Request $request)

@@ -15,22 +15,30 @@ class PostController extends Controller
 
     public function show(Request $request)
     {
-        //some code
+        $post = Post::where('id', $request->id);
+        dd($post);
     }
 
     public function store(Request $request)
     {
-        //some code
+        $validation = $request->validate([
+            'title' => 'required',
+            'text' => 'required'
+        ]);
     }
 
     public function update(Request $request)
     {
-        //some code
+        $validation = $request->validate([
+            'title' => 'required',
+            'text' => 'required'
+        ]);
     }
 
     public function destroy(Request $request)
     {
-        //some code
+        $post = Post::find($request->id);
+        $post->delete();
     }
-    
+
 }

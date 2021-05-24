@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +17,20 @@ use App\Http\Controllers\PostController;
 */
 
 
-Route::get('/posts', [PostController::class, 'index']);
-Route::post('/post', [PostController::class, 'store']);
-Route::get('/post/{id}', [PostController::class, 'show']);
-Route::put('/post/{id}', [PostController::class, 'update']);
-Route::delete('/post/{id}', [PostController::class, 'destroy']);
+Route::post('/login', [UserController::class, 'login']);
 
-Route::post('/login', [], 'login');
+// route's need to check role
+Route::middleware('auth:api', 'role.checker' )->group(function () {
+    Route::post('/post', [PostController::class, 'store']);
+    Route::put('/post/{id}', [PostController::class, 'update']);
+    Route::delete('/post/{id}', [PostController::class, 'destroy']);
+});
+
+//route's all user can call
+Route::middleware('auth:api')->group(function () {
+    Route::get('/posts', [PostController::class, 'index']);
+    Route::get('/post/{id}', [PostController::class, 'show']);
+});
+
+
+

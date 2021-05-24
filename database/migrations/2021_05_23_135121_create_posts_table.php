@@ -16,13 +16,15 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->text('title');
-            $table->multiLineString('text');
-            $table->timestamps();
+            $table->text('text');
+
 
             $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 

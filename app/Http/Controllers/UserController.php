@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Validator;
+use Auth;
 
 class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'user_name'  => 'required',
+
+        $validator = Validator::make($request->json()->all(),[
+            'email'  => 'required',
             'password'  => 'required'
         ]);
 
@@ -21,22 +26,19 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::where('user_name', $request->user_name)->first();
+        $user = User::where('email', $request->email)->first();
 
-        if ($user->status == "new")
+        if (Hash::check($request->password, $user->password))
         {
-            if (Hash::check($request->password, $user->password))
-            {
-                return response()->json([
-                    "token" => "Bearer ".$user->createToken('token')->accessToken
-                ],200);
-            }
-            else
-            {
-                return response()->json([
-                    "msg"   => ["password is wrong"]
-                ],400);
-            }
+            return response()->json([
+                "token" => $user->createToken('token')->accessToken
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                "msg"   => ["password is wrong"]
+            ],400);
         }
 
     }
